@@ -1,11 +1,11 @@
 <?php
 /*
-	GetLotteryLicenceAppDetails 			- Achira Warnakulasuriya (23/11/2021)
+	GetLotteryLicenceAppDetails 			- Achira Warnakulasuriya (23/11/2021)-
 	GetLotteryAppFinanceDetails 			- Achira Warnakulasuriya (23/11/2021)
-	GetLotteryWinnersListDetails 			- Achira Warnakulasuriya (23/11/2021)
-	GetSelectedLotteryFinancialReturn 		- Achira Warnakulasuriya (23/11/2021)
-	GetSelectedLotteryWinnersList 			- Achira Warnakulasuriya (23/11/2021)
-	GetSelectedLotteryApplicationDetails 	- Achira Warnakulasuriya (23/11/2021)
+	GetLotteryWinnersListDetails 			- Achira Warnakulasuriya (23/11/2021)-
+	GetSelectedLotteryFinancialReturn 		- Achira Warnakulasuriya (23/11/2021)-
+	GetSelectedLotteryWinnersList 			- Achira Warnakulasuriya (23/11/2021)-
+	GetSelectedLotteryApplicationDetails 	- Achira Warnakulasuriya (23/11/2021)-
 	GetApplicationDetailsId 				- Achira Warnakulasuriya (22/04/2022)
 	GetApprovedPersonDetails				- Achira Warnakulasuriya (24/04/2022)	
 */

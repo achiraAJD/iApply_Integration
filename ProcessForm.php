@@ -58,7 +58,7 @@
     }else{
         echo "<strong>iApply Form Name - {$iApplyAppFormData['Application']['data']['Form_name']} </strong><br><hr>";
     }
-         
+    
     //checking weather AS_ID and AT_ID are set in iApply json
     if(isset($tempiApplyFormData['Application']['data']['AS_ID']) && isset($tempiApplyFormData['Application']['data']['AT_ID'])){
         
@@ -66,7 +66,9 @@
         if(isJson($tempiApplyFormData['Application']['data']['AS_ID']) && isJson($tempiApplyFormData['Application']['data']['AT_ID'])){
             $AT_ID_Arr = json_decode($tempiApplyFormData['Application']['data']['AT_ID']);
             $AS_ID_Arr = json_decode($tempiApplyFormData['Application']['data']['AS_ID']);
+            //echo "valid json for AS_Id and AT_ID<br>";
         }else{
+            //echo "Converted stupid AS_ID and AT_ID arrays into valid json<br>";
             $AS_ID_Arr = convertStupidStringsToArray($tempiApplyFormData['Application']['data']['AS_ID']);
             $AT_ID_Arr = convertStupidStringsToArray($tempiApplyFormData['Application']['data']['AT_ID']);
         }
@@ -77,7 +79,7 @@
         echo '<pre>';print_r($AS_ID_Arr);echo '</pre>';
         echo "AT_ID Details in iApply JSON<br>";
         echo '<pre>';print_r($AT_ID_Arr);echo '<hr>';
-                
+         
         if($tempiApplyFormData['Application']['formId'] == $InterstateDirectSalesLicence){
             $ATASIDs = construct_ATIDs_ASIDs_Array($AT_ID_Arr,$AS_ID_Arr);
             $AT_ID_Arr = $ATASIDs[0];
@@ -111,7 +113,7 @@
     }else{
         echo "APP_LIC_ID is not set in iApply JSON<hr>";
     }
-
+    
     //checking OBJT_Code is set or not
     if(!(isset($tempiApplyFormData['Application']['data']['OBJT_Code']))){
         array_push($tempiApplyFormData['Application']['data']["OBJT_Code"] = "LAM");
@@ -142,7 +144,7 @@
                 //assigning AS_ID & AT_ID values to tempiApply arr
                 $tempiApplyFormData['Application']['data']['AS_ID'] = $AS_ID_Arr[$counter];
                 $tempiApplyFormData['Application']['data']['AT_ID'] = $AT_ID_Arr[$counter]; 
-                 
+                
                 //sending attachements with first Application, assigning same applinkgroup id, casemanager id and delegate id for file allocation to the rest of the applications
                 if($counter === 0){   
                      //reassign lastiapply to 1 if aT_ID array has 1 value
@@ -160,7 +162,7 @@
 
                     //sending upload attachments to LOGIC DB to process 
                     processAttachments($tempiApplyFormData,$ApplicationsTBLData);
-                    
+                   
                 }else if(($AT_ID_ArrSize > 1) && ($counter == $AT_ID_ArrSize-1)){
                     $lastiApply = 1;
                     echo "App Details for last Application if single form has more than 1 Application to LOGIC / lastiApply value - ({$lastiApply})<br>";
@@ -183,7 +185,7 @@
                 echo "<pre>";print_r($LicenseSysAppTBLData);echo "<hr>";             
                      
                 //process docgen files from iApply
-                processDocGen($tempiApplyFormData,$ApplicationsTBLData);     
+                processDocGen($tempiApplyFormData,$ApplicationsTBLData); 
             } // end of for loop
 
             //check if Application has a Application Fee to pay
