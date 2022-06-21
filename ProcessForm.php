@@ -31,6 +31,7 @@
     $EmployementofMinor = '621d7030ad9c597e1c7a00b3'; // Employement of minor on licensede premises iApply form
     $VaryTradingRights = '62046241ad9c581f4083f0cb'; // Vary Trading Rights iApply form
 	$NotifyTheCommissionerChangeDetails = '62302596ad9c5a6978ebe33b'; //Notify the Commissioner of a change in details iApply form
+    $ReviewDecisionWithholdWinnings = '62b16397ad9c5c838c630062';// old form id = 5f4c8932ad9c582d1485f12c'; // Application for review of Decision to withhold winnings iApply form
     /*$OfferToSellGamingMachineEntitlementsClubOne = '5a1634f7ad9c5a07f06d1496'; // offer to sell gaming machine entitlements Club One
     $OfferToPurchaseGamingMAchineEntitlementsCasino = '59edf09bad9c5a07f060e1d3'; // Offer to purchase gaming machine entitlements - casino
     $OfferToSellGamingMachineEntitlements = '59ed48d9ad9c5a823c3a9234'; //offer to sell gaming machine entitlements
@@ -132,6 +133,7 @@
         case $EmployementofMinor:
         //case $VaryTradingRights:// need to commented only in PROD
 		case $NotifyTheCommissionerChangeDetails:
+        case $$ReviewDecisionWithholdWinnings:
         /*case $OfferToPurchaseGamingMachineEntitlements:
         case $OfferToPurchaseGamingMAchineEntitlementsCasino:
         case $OfferToSellGamingMachineEntitlements:
