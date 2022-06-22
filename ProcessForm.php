@@ -55,9 +55,9 @@
     
     //displaying the correct iApply form name 
     if(isset($iApplyAppFormData['Application']['data']['Form_code'])){
-        echo "<strong>iApply Form Name - {$iApplyAppFormData['Application']['data']['Form_name']} ({$iApplyAppFormData['Application']['data']['Form_code']})</strong><br><hr>";
+        echo "<strong>{$iApplyAppFormData['Application']['data']['Form_name']} ({$iApplyAppFormData['Application']['data']['Form_code']})</strong><br><hr>";
     }else{
-        echo "<strong>iApply Form Name - {$iApplyAppFormData['Application']['data']['Form_name']} </strong><br><hr>";
+        echo "<strong>{$iApplyAppFormData['Application']['data']['Form_name']} </strong><br><hr>";
     }
     
     //checking weather AS_ID and AT_ID are set in iApply json
@@ -98,9 +98,9 @@
         //check if Application is having more than 1 application types to get Applinkgroup ID
         if($AT_ID_ArrSize > 1){
             $AppGroupID  =  getAppGroupID();
-            echo "App Group ID = {$AppGroupID[0]['GRP_ID']}<hr>";            
+            //echo "GRP_ID (AppLinkGroup) = {$AppGroupID[0]['GRP_ID']}<hr>";            
         } else{
-            echo "Single Application No APP Group ID<hr>";
+            //echo "Single Application No GRP_ID (AppLinkGroup)<hr>";
         }
 
     }else{
@@ -110,17 +110,17 @@
     //checking APP_LIC_ID is set or not
     if(isset($tempiApplyFormData['Application']['data']['APP_LIC_ID'])){
         $APP_LIC_ID = $tempiApplyFormData['Application']['data']['APP_LIC_ID'];
-        echo "APP_LIC_ID is {$tempiApplyFormData['Application']['data']['APP_LIC_ID']}<hr>";
+        //echo "APP_LIC_ID - {$tempiApplyFormData['Application']['data']['APP_LIC_ID']}<hr>";
     }else{
-        echo "APP_LIC_ID is not set in iApply JSON<hr>";
+        //echo "APP_LIC_ID is not set in iApply JSON<hr>";
     }
     
     //checking OBJT_Code is set or not
     if(!(isset($tempiApplyFormData['Application']['data']['OBJT_Code']))){
         array_push($tempiApplyFormData['Application']['data']["OBJT_Code"] = "LAM");
-        echo "Manually Assigned OBJT_Code (N/A in iApply Data)- {$tempiApplyFormData['Application']['data']['OBJT_Code']}<hr>";
+        //echo "Manually Assigned OBJT_Code (N/A in iApply Data)- {$tempiApplyFormData['Application']['data']['OBJT_Code']}<hr>";
     }else{
-        echo "OBJT_Code Avilable in iApply data- {$tempiApplyFormData['Application']['data']['OBJT_Code']}<hr>";
+        //echo "OBJT_Code Avilable in iApply JSON- {$tempiApplyFormData['Application']['data']['OBJT_Code']}<hr>";
     }
     //echo '<pre>';print_r($tempiApplyFormData);echo '</pre>';
     
@@ -133,7 +133,7 @@
         case $EmployementofMinor:
         //case $VaryTradingRights:// need to commented only in PROD
 		case $NotifyTheCommissionerChangeDetails:
-        case $$ReviewDecisionWithholdWinnings:
+        case $ReviewDecisionWithholdWinnings:
         /*case $OfferToPurchaseGamingMachineEntitlements:
         case $OfferToPurchaseGamingMAchineEntitlementsCasino:
         case $OfferToSellGamingMachineEntitlements:
@@ -141,7 +141,7 @@
             
             //looping through all the available applications from iApply form submission
             for($counter = 0; $counter < $AT_ID_ArrSize; $counter++){
-                echo "<strong>Integration is for Application({$counter}) - AS_ID Number ({$AS_ID_Arr[$counter]}) & AT_ID Number ({$AT_ID_Arr[$counter]})</strong><br>";
+                echo "<strong>AS_ID Number ({$AS_ID_Arr[$counter]}) & AT_ID Number ({$AT_ID_Arr[$counter]})</strong><br>";
                 
                 //assigning AS_ID & AT_ID values to tempiApply arr
                 $tempiApplyFormData['Application']['data']['AS_ID'] = $AS_ID_Arr[$counter];
@@ -156,7 +156,7 @@
                     }
 
                     //add iApply data to Applications in LOGIC DB
-                    echo "App Detailes for AT_ID - {$AT_ID_Arr[$counter]} to LOGIC (lastiApply - {$lastiApply})<br>"; 
+                    //echo "lastiApply - {$lastiApply}<br>"; 
                     $ApplicationsTBLData = addApplicationToLOGIC($tempiApplyFormData,$AppGroupID,'','',$lastiApply,$APP_LIC_ID);
                     $CaseManagerID = $ApplicationsTBLData[0]['AU_Name'];
                     $DelegateID = $ApplicationsTBLData[0]['APP_Delegate_AU_ID'];
@@ -167,11 +167,11 @@
                    
                 }else if(($AT_ID_ArrSize > 1) && ($counter == $AT_ID_ArrSize-1)){
                     $lastiApply = 1;
-                    echo "App Details for last Application if single form has more than 1 Application to LOGIC / lastiApply value - ({$lastiApply})<br>";
+                    //echo "App Details for last Application if single form has more than 1 Application to LOGIC / lastiApply value - ({$lastiApply})<br>";
                     $ApplicationsTBLData = addApplicationToLOGIC($tempiApplyFormData,$AppGroupID,$CaseManagerID,$DelegateID,$lastiApply,$APP_LIC_ID); //$allocato
                     echo "<pre>";print_r($ApplicationsTBLData);echo "<hr>";
                 }else{
-                    echo "Adding App Details for rest of the applications excluding 1st and last applications to LOGIC / lastiApply value {$lastiApply}<br>";
+                    //echo "Adding App Details for rest of the applications excluding 1st and last applications to LOGIC / lastiApply value {$lastiApply}<br>";
                     $ApplicationsTBLData = addApplicationToLOGIC($tempiApplyFormData,$AppGroupID,$CaseManagerID,$DelegateID,$lastiApply,$APP_LIC_ID); //$allocato
                     echo "<pre>";print_r($ApplicationsTBLData);echo "<hr>";
                 } // end of else condition

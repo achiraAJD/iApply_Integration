@@ -1070,9 +1070,9 @@
         }else if($ApplicationData['Application']['data']['OBJT_Code'] == 'COMP'){
             $OBJ_ID =  $ApplicationData['Application']['data']['ComplaintID'];
         }
-        echo 'OBJT_Code - '.$ApplicationData['Application']['data']['OBJT_Code'].'<br>';
-        echo 'OBJ_ID - '.$OBJ_ID.'<br>';
-        echo 'File Name - '.$FileName.'<br>';
+        // echo 'OBJT_Code - '.$ApplicationData['Application']['data']['OBJT_Code'].'<br>';
+        // echo 'OBJ_ID - '.$OBJ_ID.'<br>';
+        // echo 'File Name - '.$FileName.'<br>';
         
         try{
             $params = [];
@@ -1116,7 +1116,7 @@
             //echo $sql."<br>";
             //echo '<pre>';print_r($params);echo '<pre>';
             if (sizeof($results)>0) {
-                echo "adding attachments to Documents TBL in LOGIC <br>";
+                echo "adding {$FileName} to Documents TBL in LOGIC <br>";
                 return $results;
             }else {
               error(400, "<br>addAttachmentsToLOGICDB 1 Error connecting to LOGIC - ". json_encode($sth->errorInfo()));
@@ -1296,7 +1296,7 @@
 		    $sth->execute($params);
 		    $results = $sth->fetchAll(PDO::FETCH_ASSOC);
 		    if (sizeof($results)>0) {
-			    echo "Data Passed to FinancialTransaction TBL & FinancialTransactionFeeItem TBL in LOGIC DB - FT_ID({$results[0]['FT_ID']})<hr>";
+			    echo "FT_ID (FinancialTransaction) - {$results[0]['FT_ID']}<hr>";
                 return $results[0]['FT_ID'];
             } else {
 			    error(400, "1 Error connecting to LOGIC - ". json_encode($sth->errorInfo()));
