@@ -1062,6 +1062,7 @@
         $DOC_Subject = 'File contents';
         $switchValue = 'UploadDocument';
         $OnlyFileName = substr($FileName,0,-4); //removes the last 4 charaters in file name eg - Payment confirmation.pdf (Payment confirmation) 
+        $OBJT_Code = $ApplicationData['Application']['data']['OBJT_Code'];//'LAM';//Liquor Application Management (LAM)
         
         if($ApplicationData['Application']['data']['OBJT_Code'] == 'LAM'){
             $OBJ_ID = $ApplicationTBLAPP_ID[0]['APP_ID'];
@@ -1087,7 +1088,7 @@
             $params['DOC_Subject'] =$ControlName."(".$DOC_Subject.")";//this is temp valu need to delete later once figure out 
             $params['AU_Name'] = $DOC_Author;//iApply
             $params['OBJ_ID'] = $OBJ_ID;//app_id                      
-            $params['OBJT_Code'] = $ApplicationData['Application']['data']['OBJT_Code'];//'LAM';//Liquor Application Management (LAM)
+            $params['OBJT_Code'] = $OBJT_Code;
             $params['AS_ID'] = $ApplicationData['Application']['data']['AS_ID'];
             $params['AT_ID'] = $ApplicationData['Application']['data']['AT_ID'];               
             $params['DOC_FileStream'] = $Base64Value;
@@ -1116,7 +1117,7 @@
             //echo $sql."<br>";
             //echo '<pre>';print_r($params);echo '<pre>';
             if (sizeof($results)>0) {
-                echo "adding {$FileName} to Documents TBL in LOGIC <br>";
+                echo "adding {$FileName} (OBJ_ID {$OBJ_ID} & OBJT_Code - {$OBJT_Code}) to Documents TBL in LOGIC <br>";
                 return $results;
             }else {
               error(400, "<br>addAttachmentsToLOGICDB 1 Error connecting to LOGIC - ". json_encode($sth->errorInfo()));
