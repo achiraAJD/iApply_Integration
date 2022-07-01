@@ -1,7 +1,7 @@
 USE [LGS_UAT]
 GO
 
-/****** Object:  View [dbo].[vwWebDecisionAppApplicationData]    Script Date: 3/06/2022 2:36:08 PM ******/
+/****** Object:  View [dbo].[vwWebDecisionAppApplicationData]    Script Date: 1/07/2022 11:56:41 AM ******/
 SET ANSI_NULLS ON
 GO
 

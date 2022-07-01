@@ -3,6 +3,25 @@
         FileZilla Path UAT - /home/www/htdocs/LGPubReg/UAT/iApply
         FileZilla Path PROD -  /home/www/htdocs/LGPubReg/iApply
         FileZilla Path APIs - /home/www/htdocs/OccLicPubReg/iApply/TEST
+
+        SQL for test in LOGIC
+        for LSA Json
+        select * from LicenceSystemApplications where LSA_ID in(25137,25138,25139) 
+
+        for LSL json
+        select * from LicenceSystemLicences where LSL_ID = 23550
+        
+        for Finantial Transaction in LOGIC -
+        select * from FinancialTransaction ft
+        inner join FinancialTransactionFeeItem fft on ft.FT_ID = fft.FTFI_FT_ID
+        where ft.FT_ID = 2165765
+
+        to check email html generated code in LOGIC
+        select top 10 * from LGO_NotificationQueue order by NQ_ID desc
+
+        to check attachments and docgens in LOGIC
+        select top 10 * from Documents order by DOC_Id desc;
+
     */
 
     require('CommonFunctions.php');
@@ -36,7 +55,7 @@
     $OfferToPurchaseGamingMAchineEntitlementsCasino = '59edf09bad9c5a07f060e1d3'; // Offer to purchase gaming machine entitlements - casino
     $OfferToSellGamingMachineEntitlements = '59ed48d9ad9c5a823c3a9234'; //offer to sell gaming machine entitlements
     $OfferToPurchaseGamingMachineEntitlements = '59e9eaeead9c5a211c5d4d9a'; // offer to purchase gaming machine entitlements*/
-
+    $WageringSystemEquipment = '5f59c3b2ad9c5930bc39d3a8'; //Application for the approval of wagering systems or equipment
      
     $CaseManagerID = ''; // store case manager ID for file allocation
     $DelegateID = ''; // store delegae ID for hearings    
@@ -131,10 +150,11 @@
         case $ChangeAlterRedefineLicensePremises:
         case $RelocateLicense:
         case $EmployementofMinor:
-        //case $VaryTradingRights:// need to commented only in PROD
-		case $NotifyTheCommissionerChangeDetails:
+        case $NotifyTheCommissionerChangeDetails:
         case $ReviewDecisionWithholdWinnings:
-        /*case $OfferToPurchaseGamingMachineEntitlements:
+        /*case $WageringSystemEquipment:
+        //case $VaryTradingRights:// need to commented only in PROD
+		case $OfferToPurchaseGamingMachineEntitlements:
         case $OfferToPurchaseGamingMAchineEntitlementsCasino:
         case $OfferToSellGamingMachineEntitlements:
         case $OfferToSellGamingMachineEntitlementsClubOne:*/
@@ -187,7 +207,13 @@
                 echo "<pre>";print_r($LicenseSysAppTBLData);echo "<hr>";             
                      
                 //process docgen files from iApply
-                processDocGen($tempiApplyFormData,$ApplicationsTBLData); 
+                processDocGen($tempiApplyFormData,$ApplicationsTBLData);
+                
+                //sending data to ApprovalGamesMachines table in LOGIC if form is Application for the approval of wagering systems or equipment
+                if($iApplyAppFormData['Application']['formId'] == $WageringSystemEquipment){
+                    $ApprovalGamesMachineTBLData =  addApprovalGamesMachinesToLOGIC($tempiApplyFormData,$ApplicationsTBLData);  
+                } 
+
             } // end of for loop
 
             //check if Application has a Application Fee to pay
@@ -206,10 +232,10 @@
                 
                 //sending Fee Types array to construct FT_FI_Items Array
                 $FT_FI_ItemsArr = constructFTFI_ItemsArr($FeeTypesArr);
-                /*echo "Fee Types Details<br>";
+                echo "Fee Types Details<br>";
                 echo '<pre>';echo print_r($FeeTypesArr,true);echo '<hr>';
                 echo "FT_FIArr Array Details <br>";
-                echo "<pre>";print_r($FT_FI_ItemsArr);echo "<hr>";*/
+                echo "<pre>";print_r($FT_FI_ItemsArr);echo "<hr>";
  
                 //get Application Fee and adding the financial transactions details to LOGIC DB 
                 getApplicationFeeFromiApply($FT_Amount,$tempiApplyFormData,$FT_FI_ItemsArr);
@@ -285,8 +311,8 @@
  
                         //generates json string for LicenceSystemApplications in LOGIC DB
                         $JsonStrForLicenSysLicenseeTBL = createJSONForLicenceSystemLicences($APP_LIC_ID,$LicenseeData,$NewLicenceDetails,$ENT_IDArr,$ApplicationsTBLDataArr,$tempiApplyFormData);
-                        echo "JSON string for LicenceSystemLicensee TBL <br>";
-                        echo "<pre>";print_r($JsonStrForLicenSysLicenseeTBL);echo '<br><br>';
+                        //echo "JSON string for LicenceSystemLicensee TBL <br>";
+                        //echo "<pre>";print_r($JsonStrForLicenSysLicenseeTBL);echo '<br><br>';
                          
                         //add iapply data and json string to LicenceSystemApplications in LOGIC DB
                         $LicenseSysLicencesTBLData = addLicenceSystemLicencesTBL($JsonStrForLicenSysLicenseeTBL,$APP_LIC_ID,$NewLicenceDetails,$tempiApplyFormData);
@@ -313,8 +339,8 @@
                  
                 //generates json string for LicenceSystemApplications in LOGIC DB
                 $JsonStrForLicenSysAppTBL = createJSONForLicenceSystemApplicationsTBL($ApplicationsTBLData,$tempiApplyFormData,$APP_LIC_ID,$NewLicenceDetails,$LicenseeData,$EntityRepeaterArr,$ENT_IDArr);
-                echo "JSON string for LicenceSystemApplications TBL <br>";
-                echo "<pre>";print_r($JsonStrForLicenSysAppTBL);echo '<hr>';
+                //echo "JSON string for LicenceSystemApplications TBL <br>";
+                //echo "<pre>";print_r($JsonStrForLicenSysAppTBL);echo '<hr>';
                  
                 //add iapply data and json string to LicenceSystemApplications in LOGIC DB
                 $LicenseSysAppTBLData = addLicenceSystemApplicationsTBL($JsonStrForLicenSysAppTBL,$APP_LIC_ID,$ApplicationsTBLData);
@@ -363,10 +389,10 @@
                  
                  //sending Fee Types array to construct FT_FI_Items Array
                  $FT_FI_ItemsArr = constructFTFI_ItemsArr($FeeTypesArr);
-                 //echo "Fee Types Details<br>";
-                 //echo '<pre>';echo print_r($FeeTypesArr,true);echo '<hr>';
-                 //echo "FT_FIArr Array Details <br>";
-                 //echo "<pre>";print_r($FT_FI_ItemsArr);echo "<hr>";
+                 echo "Fee Types Details<br>";
+                 echo '<pre>';echo print_r($FeeTypesArr,true);echo '<hr>';
+                 echo "FT_FIArr Array Details <br>";
+                 echo "<pre>";print_r($FT_FI_ItemsArr);echo "<hr>";
   
                  //get Application Fee and adding the financial transactions details to LOGIC DB 
                  getApplicationFeeFromiApply($FT_Amount,$tempiApplyFormData,$FT_FI_ItemsArr);

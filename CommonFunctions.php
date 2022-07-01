@@ -1117,7 +1117,7 @@
             //echo $sql."<br>";
             //echo '<pre>';print_r($params);echo '<pre>';
             if (sizeof($results)>0) {
-                echo "adding {$FileName} (OBJ_ID {$OBJ_ID} & OBJT_Code - {$OBJT_Code}) to Documents TBL in LOGIC <br>";
+                echo "adding {$FileName} (File Type = {$ControlName}, OBJ_ID = {$OBJ_ID} & OBJT_Code - {$OBJT_Code}) to Documents TBL in LOGIC <br>";
                 return $results;
             }else {
               error(400, "<br>addAttachmentsToLOGICDB 1 Error connecting to LOGIC - ". json_encode($sth->errorInfo()));
@@ -1207,7 +1207,7 @@
             $dbh = new PDO("odbc:Driver=$drv; Server=$svr; Database=$db; UID=$un; PWD=$pw;" );
             $sql = 'EXEC spWebAddApprovalGamesMachines ';
                           
-            $params['AGM_CB_ID_GameApprovalType'] = 1234;//$ApplicationData['Application']['data']['AGM_CB_ID_GameApprovalType'];
+            $params['AGM_CB_ID_GameApprovalType'] = $ApplicationData['Application']['data']['AGM_CB_ID_GameApprovalType'];//$ApplicationData['Application']['data']['AGM_CB_ID_GameApprovalType'];
             $params['AGM_Manufacturer'] = $ApplicationData['Application']['data']['AGM_Manufacturer'];
             $params['AGM_GameID'] = $ApplicationData['Application']['data']['AGM_GameID'];
             $params['AGM_ShellID'] = $ApplicationData['Application']['data']['AGM_ShellID'];
@@ -1218,6 +1218,7 @@
             $params['AGM_APP_ID'] = (int)$ApplicationTBLArr[0]['APP_ID']; 
             $params['AGM_Description'] = $ApplicationData['Application']['data']['AGM_Description'];
             $params['AGM_TestingATF'] = $ApplicationData['Application']['data']['AGM_TestingATF'];
+            $params['AGM_CB_ID_Status'] = $ApplicationData['Application']['data']['AGM_CB_ID_Status'];
                 
             $sqlParams = [];
             foreach ($params as $key => $value) {

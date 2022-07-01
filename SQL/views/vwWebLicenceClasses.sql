@@ -1,7 +1,7 @@
 USE [LGS_UAT]
 GO
 
-/****** Object:  View [dbo].[vwWebLicenceClasses]    Script Date: 3/06/2022 2:19:19 PM ******/
+/****** Object:  View [dbo].[vwWebLicenceClasses]    Script Date: 1/07/2022 11:44:45 AM ******/
 SET ANSI_NULLS ON
 GO
 
