@@ -1,10 +1,14 @@
 <?php
      /*
+        Start Date : 08/04/2021
+        Developer : Achira Warnakulasuriya
+
+        PROD / UAT path for php files
         FileZilla Path UAT - /home/www/htdocs/LGPubReg/UAT/iApply
         FileZilla Path PROD -  /home/www/htdocs/LGPubReg/iApply
         FileZilla Path APIs - /home/www/htdocs/OccLicPubReg/iApply/TEST
 
-        SQL for test in LOGIC
+        SQL queries for test in LOGIC
         for LSA Json
         select * from LicenceSystemApplications where LSA_ID in(25137,25138,25139) 
 
@@ -21,6 +25,11 @@
 
         to check attachments and docgens in LOGIC
         select top 10 * from Documents order by DOC_Id desc;
+
+        to check weather a perticular store procedure is created in sql management
+        SELECT name, OBJECT_DEFINITION(object_id)
+        FROM sys.procedures 
+        WHERE OBJECT_DEFINITION(object_id) LIKE '%IFR_Investigation%'
 
     */
 
@@ -56,6 +65,7 @@
     $OfferToSellGamingMachineEntitlements = '59ed48d9ad9c5a823c3a9234'; //offer to sell gaming machine entitlements
     $OfferToPurchaseGamingMachineEntitlements = '59e9eaeead9c5a211c5d4d9a'; // offer to purchase gaming machine entitlements*/
     $WageringSystemEquipment = '5f59c3b2ad9c5930bc39d3a8'; //Application for the approval of wagering systems or equipment
+    $ConsumerComplaints = '62848e20ad9c5a99b42122df'; //Consumer Complaints 
      
     $CaseManagerID = ''; // store case manager ID for file allocation
     $DelegateID = ''; // store delegae ID for hearings    
@@ -117,9 +127,9 @@
         //check if Application is having more than 1 application types to get Applinkgroup ID
         if($AT_ID_ArrSize > 1){
             $AppGroupID  =  getAppGroupID();
-            //echo "GRP_ID (AppLinkGroup) = {$AppGroupID[0]['GRP_ID']}<hr>";            
+            echo "GRP_ID (AppLinkGroup) = {$AppGroupID[0]['GRP_ID']}<hr>";            
         } else{
-            //echo "Single Application No GRP_ID (AppLinkGroup)<hr>";
+            echo "Single Application No GRP_ID (AppLinkGroup)<hr>";
         }
 
     }else{
@@ -129,17 +139,17 @@
     //checking APP_LIC_ID is set or not
     if(isset($tempiApplyFormData['Application']['data']['APP_LIC_ID'])){
         $APP_LIC_ID = $tempiApplyFormData['Application']['data']['APP_LIC_ID'];
-        //echo "APP_LIC_ID - {$tempiApplyFormData['Application']['data']['APP_LIC_ID']}<hr>";
+        echo "APP_LIC_ID - {$tempiApplyFormData['Application']['data']['APP_LIC_ID']}<hr>";
     }else{
-        //echo "APP_LIC_ID is not set in iApply JSON<hr>";
+        echo "APP_LIC_ID is not set in iApply JSON<hr>";
     }
     
     //checking OBJT_Code is set or not
     if(!(isset($tempiApplyFormData['Application']['data']['OBJT_Code']))){
         array_push($tempiApplyFormData['Application']['data']["OBJT_Code"] = "LAM");
-        //echo "Manually Assigned OBJT_Code (N/A in iApply Data)- {$tempiApplyFormData['Application']['data']['OBJT_Code']}<hr>";
+        echo "Manually Assigned OBJT_Code (N/A in iApply Data)- {$tempiApplyFormData['Application']['data']['OBJT_Code']}<hr>";
     }else{
-        //echo "OBJT_Code Avilable in iApply JSON- {$tempiApplyFormData['Application']['data']['OBJT_Code']}<hr>";
+        echo "OBJT_Code Avilable in iApply JSON- {$tempiApplyFormData['Application']['data']['OBJT_Code']}<hr>";
     }
     //echo '<pre>';print_r($tempiApplyFormData);echo '</pre>';
     
@@ -525,9 +535,12 @@
             processDocGen($tempiApplyFormData,'');
             
         break;
+
+        case $ConsumerComplaints:
+            echo "Consumer Complaints form :)<br>";
+        break;
  
          default:
              echo "<strong>{$iApplyAppFormData['Application']['data']['Form_name']} ({$iApplyAppFormData['Application']['data']['Form_code']}) is Not Integrated  to LOGIC <br>COMING SOON.......(in 2050)  be patient &#x1F60a &#x1F60a &#x1F60a</strong><br>";                       
-     }//end of switch case   
-    
+     }//end of switch case
 ?>
