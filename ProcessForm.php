@@ -31,6 +31,21 @@
         FROM sys.procedures 
         WHERE OBJECT_DEFINITION(object_id) LIKE '%IFR_Investigation%'
 
+        to check foreign key details in given table 
+        SELECT   
+            f.name AS foreign_key_name  
+            ,OBJECT_NAME(f.parent_object_id) AS table_name  
+            ,COL_NAME(fc.parent_object_id, fc.parent_column_id) AS constraint_column_name  
+            ,OBJECT_NAME (f.referenced_object_id) AS referenced_object  
+            ,COL_NAME(fc.referenced_object_id, fc.referenced_column_id) AS referenced_column_name  
+            ,f.is_disabled, f.is_not_trusted
+            ,f.delete_referential_action_desc  
+            ,f.update_referential_action_desc  
+        FROM sys.foreign_keys AS f  
+        INNER JOIN sys.foreign_key_columns AS fc   
+        ON f.object_id = fc.constraint_object_id   
+        WHERE f.parent_object_id = OBJECT_ID('table name');
+
     */
 
     require('CommonFunctions.php');
@@ -76,8 +91,8 @@
 
     //getting iApply JSON from iApply API
     $iApplyAppFormData = getiApplyApplicationJSON($APP_ID);
-    //echo "<strong>iApply Data for APP_ID - {$APP_ID}</strong><br>";
-    //echo "<pre>";echo print_r($iApplyAppFormData,true);echo "<hr>";
+    echo "<strong>iApply Data for APP_ID - {$APP_ID}</strong><br>";
+    echo "<pre>";echo print_r($iApplyAppFormData,true);echo "<hr>";
     
     //assigning all iApply App data into temp array
     $tempiApplyFormData = $iApplyAppFormData;
@@ -522,7 +537,7 @@
             //echo "<pre>";echo print_r($tempiApplyFormData,true);echo "<hr>";
             //echo $tempiApplyFormData['Application']['data']['ComplaintID'];
             
-            $CCS_ConsumerID =  addCCS_ConsumerToLOGIC($tempiApplyFormData,$ComplanitID);
+            $CCS_ConsumerID =  addCCS_ConsumerToLOGIC($tempiApplyFormData,$ComplanitID,'');
             echo "<pre>";print_r($CCS_ConsumerID);echo "</pre>"; 
                    
             $CCS_ComplaintProductPracticeID =  addCCS_ComplaintProductPracticeToLOGIC($tempiApplyFormData, $ComplanitID);
@@ -537,7 +552,22 @@
         break;
 
         case $ConsumerComplaints:
-            echo "Consumer Complaints form :)<br>";
+            // spWebAddIFRInvestigation - newly created sp, spWebAddCCSTablesToLOGIC - used but did editing in insert statement 
+            //vwWebComboBoxes used without editing
+            //addiong data TO IFRInvestigation table in logic
+            $IFRInvestigationDataArr =  addIFRInvestigationToLOGIC($tempiApplyFormData);
+            $IFRInvID = $IFRInvestigationDataArr[0]['ID'];
+            array_push($tempiApplyFormData['Application']['data']['IFRInvID'] = $IFRInvID); 
+            echo "<pre>";print_r($IFRInvestigationDataArr);echo "<hr>";
+
+            $CCS_ConsumerID =  addCCS_ConsumerToLOGIC($tempiApplyFormData,'',$IFRInvID);
+            echo "<pre>";print_r($CCS_ConsumerID);echo "<hr>"; 
+
+            // //used to process upload attachements from iApply
+            processAttachments($tempiApplyFormData,'');
+      
+            // //process remaining docgen files from iApply
+            //processDocGen($tempiApplyFormData,'');
         break;
  
          default:

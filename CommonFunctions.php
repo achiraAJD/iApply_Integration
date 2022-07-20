@@ -1008,7 +1008,7 @@
                 }
                 echo "<br>";
             }else{
-                echo "{$docGenJSON['File']['Filename']} is null <br>";
+                echo "{$docGenJSON['File']['Filename']} is null / attachment not found<br>";
             }
         }
         echo "<hr>";
@@ -1070,6 +1070,8 @@
             $OBJ_ID =  $ApplicationData['Application']['data']['LAPP_ID'];
         }else if($ApplicationData['Application']['data']['OBJT_Code'] == 'COMP'){
             $OBJ_ID =  $ApplicationData['Application']['data']['ComplaintID'];
+        }else if($ApplicationData['Application']['data']['OBJT_Code'] == 'INV'){ 
+            $OBJ_ID =  $ApplicationData['Application']['data']['IFRInvID'];
         }
         // echo 'OBJT_Code - '.$ApplicationData['Application']['data']['OBJT_Code'].'<br>';
         // echo 'OBJ_ID - '.$OBJ_ID.'<br>';
@@ -1666,7 +1668,7 @@
     } // end of addCCS_ComplaintToLOGIC
 
     //adding all the data to LOGIC CCS_Complaint table
-    function addCCS_ConsumerToLOGIC($ApplicationData, $ComplaintID){
+    function addCCS_ConsumerToLOGIC($ApplicationData, $ComplaintID, $IFRInvID){
         global $drv, $svr, $db, $un, $pw, $LastUpdateUser;
                
         try{
@@ -1681,7 +1683,26 @@
             $params['LastUpdateUser'] = $LastUpdateUser;
             $params['IsOpen'] = 1;
             $params['Switch'] = 'CCS_Consumer';
-            
+            $params['StreetName'] = $ApplicationData['Application']['data']['StreetName'];
+            $params['Suburb'] = $ApplicationData['Application']['data']['Suburb'];
+            $params['Postcode'] = $ApplicationData['Application']['data']['Postcode'];
+            $params['CB_ID_Gender'] = $ApplicationData['Application']['data']['CB_ID_Gender'];
+            $params['Phone'] = $ApplicationData['Application']['data']['Phone'];
+            $params['IsPOBox'] = 1;//$ApplicationData['Application']['data']['IsPOBox'];
+            $params['PODetails'] = $ApplicationData['Application']['data']['PODetails'];
+            $params['LevelNo'] = $ApplicationData['Application']['data']['LevelNo'];
+            $params['UnitNo'] = $ApplicationData['Application']['data']['UnitNo'];
+            $params['StreetNo'] = $ApplicationData['Application']['data']['StreetNo'];
+            $params['StreetType'] = $ApplicationData['Application']['data']['StreetType'];
+            $params['State'] = $ApplicationData['Application']['data']['State'];
+            $params['Country'] = $ApplicationData['Application']['data']['Country'];
+            $params['IsOverSeasOrOdd'] = 1;//$ApplicationData['Application']['data']['IsOverSeasOrOdd'];
+            $params['Line1'] = $ApplicationData['Application']['data']['Line1'];
+            $params['Line2'] = $ApplicationData['Application']['data']['Line2'];
+            $params['Line3'] = $ApplicationData['Application']['data']['Line3'];
+            $params['Line4'] = $ApplicationData['Application']['data']['Line4'];
+            $params['IFRInvID'] = $IFRInvID;
+        
             $sqlParams = [];
             foreach ($params as $key => $value) {
                 if (strlen($value) == 0) {
@@ -1831,7 +1852,113 @@
         }
     } // end of addCCS_ComplaintProductPracticeToLOGIC
 
+    //generate the CB_ID based on the CB_Code provided  in the iApply JSON
+    function getCB_IDFromComboBoxes($CB_Code){
+        $params = [];
+        global $drv, $svr, $db, $un, $pw;
+        try{
+            $dbh = new PDO("odbc:Driver=$drv; Server=$svr; Database=$db; UID=$un; PWD=$pw;" );
+            $sql = "SELECT CB_ID FROM vwWebComboBoxes WHERE CB_Code = :CB_Code";
 
+            $params['CB_Code'] = $CB_Code;
+            
+            $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+            $sth->execute($params);
+            $results = $sth->fetchAll(PDO::FETCH_ASSOC);
+            
+            if (sizeof($results)>0) {
+                echo "Data Fetched from Combo Boxex table in LOGIC<br>";
+                echo '<pre>';print_r($results);echo '</pre>';
+                return $results[0]['CB_ID'];
+            } else {
+                error(400, "<br> getCB_IDFromComboBoxes 1 - Error connecting to LOGIC - ". json_encode($sth->errorInfo()));
+            }
+        }catch(PDOException $e){
+            error(400, "<br> getCB_IDFromComboBoxes 2 - Error connecting to LOGIC - ". $e->getMessage());
+        }
+
+        $dbh = null;
+    }// end of getCB_IDFromComboBoxes
+
+
+    //adding all the data to IFR_Investigation in LOGIC
+    function addIFRInvestigationToLOGIC($ApplicationData){
+        global $drv, $svr, $db, $un, $pw, $LastUpdateUser;
+        //CB_Code_InvestigationComplaintType
+        $CB_Code = $ApplicationData['Application']['data']['CB_Code_InvestigationComplaintType'];
+        
+        try{
+            $dbh = new PDO("odbc:Driver=$drv; Server=$svr; Database=$db; UID=$un; PWD=$pw;" );
+
+            $sql = 'EXEC spWebAddIFRInvestigation ';
+	    
+		    $params['RelatedFile'] = $ApplicationData['Application']['data']['RelatedFile'];
+            $params['EntityID'] = $ApplicationData['Application']['data']['EntityID'];
+            $params['LicenceID'] = $ApplicationData['Application']['data']['LicenceID'];
+            $params['EntityTypeID'] = $ApplicationData['Application']['data']['EntityTypeID'];
+            $params['EntityContactName'] = $ApplicationData['Application']['data']['EntityContactName'];
+            $params['EntityBusinessName'] = $ApplicationData['Application']['data']['EntityBusinessName'];            
+            $params['EntityPhone'] = $ApplicationData['Application']['data']['EntityPhone'];
+            //$params['EntityMobile'] = $ApplicationData['Application']['data']['EntityMobile'];
+            //$params['EntityBusinessPhone'] = $ApplicationData['Application']['data']['EntityBusinessPhone'];
+            $params['EntityEMail'] = $ApplicationData['Application']['data']['EntityEMail'];
+            $params['EntityWeb'] = $ApplicationData['Application']['data']['EntityWeb'];
+            $params['EntityABN'] = $ApplicationData['Application']['data']['EntityABN'];
+            $params['DateReceived'] = date_format(date_create_from_format('d/m/Y', $ApplicationData['Application']['data']['DateReceived']),'Y-m-d ');
+            $params['CB_ID_IFR_InvestigationStatus'] = $ApplicationData['Application']['data']['CB_ID_IFR_InvestigationStatus'];
+            //$params['ActID'] = $ApplicationData['Application']['data']['ActID'];
+            $params['EntityLicenseeName'] = $ApplicationData['Application']['data']['EntityLicenseeName'];
+            $params['CB_ID_LicencingArea'] = $ApplicationData['Application']['data']['CB_ID_LicencingArea'];
+            $params['LicenceReferenceNumber'] = $ApplicationData['Application']['data']['LicenceReferenceNumber'];            
+            $params['PremisesName'] = $ApplicationData['Application']['data']['PremisesName'];
+            //$params['EntityARBN'] = $ApplicationData['Application']['data']['EntityARBN'];
+            //$params['SupportAppUserID'] = $ApplicationData['Application']['data']['SupportAppUserID'];
+            $params['AppUserID'] = $ApplicationData['Application']['data']['AppUserID'];
+            $params['CB_ID_ReceivedFrom'] = $ApplicationData['Application']['data']['CB_ID_ReceivedFrom'];
+            //$params['CB_Code_InvestigationComplaintType'] = $ApplicationData['Application']['data']['CB_Code_InvestigationComplaintType'];
+            $params['CB_ID_IFR_LicenceRequirement'] = 22;//$ApplicationData['Application']['data']['CB_ID_IFR_LicenceRequirement'];
+            $params['CB_ID_LegalStatus'] = 1;// $ApplicationData['Application']['data']['CB_ID_LegalStatus'];
+            $params['Switch'] = 'Insert';
+            $params['LastUpdateUser'] = $LastUpdateUser;
+            //$params['CB_ID_ComplaintType'] = getCB_IDFromComboBoxes($CB_Code);
+            
+            $sqlParams = [];
+            foreach ($params as $key => $value) {
+                if (strlen($value) == 0) {
+                    unset($params[$key]); 
+                    $sqlParams[] = "@$key = null";   
+                } else {
+                    $sqlParams[] = "@$key = :$key";
+                }
+            }
+        
+            $sql .= join(', ', $sqlParams);
+            //echo $sql."<br>";
+            //echo '<pre>';print_r($params);echo '<pre>';
+            $sth = $dbh->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+            $sth->execute($params);
+            do {
+                $rows = $sth->fetchAll(PDO::FETCH_ASSOC);
+                //echo 'values of $rows array<br>';
+                //echo '<pre>';print_r($rows);echo '</pre>';
+                if ($rows) {
+                    if(isset($rows[0]['ID'])) {
+                        //echo "hehe<br>";
+                        $results = $rows;
+                    }
+                }
+            } while ($sth->nextRowset());
+            if (sizeof($results)>0) {
+                //echo "Data Passed to Applications tbl in LOGIC DB<br>";
+                return $results;
+            } else {
+                error(400, "<br>addIFRInvestigationToLOGIC 1 - Error connecting to LOGIC - ". json_encode($sth->errorInfo()));
+            }
+        }catch (PDOException $e) {
+            error(400, "<br>addIFRInvestigationToLOGIC 2 Error connecting to LOGIC - ". $e->getMessage());
+        }
+    } // end of function  addIFRInvestigationToLOGIC
+    
     //error fucntion
     function error ($code, $message) {
         http_response_code($code);
