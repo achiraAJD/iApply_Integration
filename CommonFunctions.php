@@ -1681,7 +1681,7 @@
             $params['EMail'] = $ApplicationData['Application']['data']['EMail'];
             $params['ComplaintID'] = $ComplaintID;
             $params['LastUpdateUser'] = $LastUpdateUser;
-            $params['IsOpen'] = 1;
+            //$params['IsOpen'] = 1;
             $params['Switch'] = 'CCS_Consumer';
             $params['StreetName'] = $ApplicationData['Application']['data']['StreetName'];
             $params['Suburb'] = $ApplicationData['Application']['data']['Suburb'];
@@ -1701,7 +1701,7 @@
             $params['Line2'] = $ApplicationData['Application']['data']['Line2'];
             $params['Line3'] = $ApplicationData['Application']['data']['Line3'];
             $params['Line4'] = $ApplicationData['Application']['data']['Line4'];
-            $params['IFRInvID'] = $IFRInvID;
+            $params['InvestigationID'] = $IFRInvID;
         
             $sqlParams = [];
             foreach ($params as $key => $value) {
@@ -1914,7 +1914,7 @@
             //$params['EntityARBN'] = $ApplicationData['Application']['data']['EntityARBN'];
             //$params['SupportAppUserID'] = $ApplicationData['Application']['data']['SupportAppUserID'];
             $params['AppUserID'] = $ApplicationData['Application']['data']['AppUserID'];
-            $params['CB_ID_ReceivedFrom'] = $ApplicationData['Application']['data']['CB_ID_ReceivedFrom'];
+            $params['CB_ID_ReceivedFrom'] = 2100;// $ApplicationData['Application']['data']['CB_ID_ReceivedFrom'];
             //$params['CB_Code_InvestigationComplaintType'] = $ApplicationData['Application']['data']['CB_Code_InvestigationComplaintType'];
             $params['CB_ID_IFR_LicenceRequirement'] = 22;//$ApplicationData['Application']['data']['CB_ID_IFR_LicenceRequirement'];
             $params['CB_ID_LegalStatus'] = 1;// $ApplicationData['Application']['data']['CB_ID_LegalStatus'];

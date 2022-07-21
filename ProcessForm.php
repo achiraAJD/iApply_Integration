@@ -91,8 +91,8 @@
 
     //getting iApply JSON from iApply API
     $iApplyAppFormData = getiApplyApplicationJSON($APP_ID);
-    echo "<strong>iApply Data for APP_ID - {$APP_ID}</strong><br>";
-    echo "<pre>";echo print_r($iApplyAppFormData,true);echo "<hr>";
+    //echo "<strong>iApply Data for APP_ID - {$APP_ID}</strong><br>";
+    //echo "<pre>";echo print_r($iApplyAppFormData,true);echo "<hr>";
     
     //assigning all iApply App data into temp array
     $tempiApplyFormData = $iApplyAppFormData;
